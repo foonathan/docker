@@ -1,13 +1,18 @@
-pool:
-    vmImage: 'Ubuntu 16.04'
+jobs:
+- job: default
+  timeoutInMinutes: 360
+  pool:
+     vmImage: 'Ubuntu 16.04'
 
-steps:
-- script: docker login -u foonathan -p $(docker_pwd)
-  displayName: docker login
-- script: docker build -t foonathan/micro_cpp_base micro_cpp_base/ && docker push foonathan/micro_cpp_base
-  displayName: micro_cpp_base
-- script: docker build -t foonathan/micro_cpp_gcc micro_cpp_gcc/ && docker push foonathan/micro_cpp_gcc
-  displayName: micro_cpp_gcc
-- script: docker build -t foonathan/micro_cpp_clang micro_cpp_clang/ && docker push foonathan/micro_cpp_clang
-  displayName: micro_cpp_clang
+  steps:
+  - script: docker login -u foonathan -p $(docker_pwd)
+    displayName: docker login
+  - script: docker build -t foonathan/micro_cpp_base micro_cpp_base/ && docker push foonathan/micro_cpp_base
+    displayName: micro_cpp_base
+  - script: docker build -t foonathan/micro_cpp_gcc micro_cpp_gcc/ && docker push foonathan/micro_cpp_gcc
+    displayName: micro_cpp_gcc
+  - script: docker build -t foonathan/micro_cpp_clang micro_cpp_clang/ && docker push foonathan/micro_cpp_clang
+    displayName: micro_cpp_clang
+  - script: docker build -t foonathan/micro_cpp_llvm micro_cpp_llvm/ && docker push foonathan/micro_cpp_llvm
+    displayName: micro_cpp_llvm
 
