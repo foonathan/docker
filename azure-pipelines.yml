@@ -1,0 +1,10 @@
+pool:
+    vmImage: 'Ubuntu 16.04'
+
+steps:
+- script: docker login -u foonathan -p $(docker_pwd)
+  displayName: docker login
+- script: docker build -t foonathan/micro_cpp_base micro_cpp_base/ && docker push foonathan/micro_cpp_base
+  displayName: micro_cpp_base
+  continueOnError: true
+
