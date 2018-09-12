@@ -6,5 +6,8 @@ steps:
   displayName: docker login
 - script: docker build -t foonathan/micro_cpp_base micro_cpp_base/ && docker push foonathan/micro_cpp_base
   displayName: micro_cpp_base
-  continueOnError: true
+- script: docker build -t foonathan/micro_cpp_gcc micro_cpp_gcc/ && docker push foonathan/micro_cpp_gcc
+  displayName: micro_cpp_gcc
+- script: docker build -t foonathan/micro_cpp_clang micro_cpp_clang/ && docker push foonathan/micro_cpp_clang
+  displayName: micro_cpp_clang
 
