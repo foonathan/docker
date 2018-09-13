@@ -4,6 +4,6 @@ FROM foonathan/micro_cpp_base
 RUN apk add g++ clang
 
 # setup clang as compiler
-ENV CC  clang
-ENV CXX clang++
+ENV CC  clang \
+    CXX clang++
 
