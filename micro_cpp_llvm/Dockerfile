@@ -16,6 +16,8 @@ RUN apk add --no-cache python3 ninja \
                         ../llvm-src \
     && cmake --build . \
     && cmake --build . --target install \
+    # static libclang library is not installed, so have to do manually
+    && find . -name 'libclang.a' -exec cp {} /opt/llvm/lib \; \
     && cd ../ \
 # remove build files
     && rm -r llvm-src/ llvm-build/ \
