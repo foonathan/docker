@@ -1,7 +1,7 @@
 FROM foonathan/micro_cpp_gcc
 
 # install build dependencies
-RUN apk add python3 ninja \
+RUN apk add --no-cache python3 ninja \
 # download source code
     && wget -q http://releases.llvm.org/6.0.1/llvm-6.0.1.src.tar.xz -O llvm.tar.xz \
     && wget -q http://releases.llvm.org/6.0.1/cfe-6.0.1.src.tar.xz  -O clang.tar.xz \
@@ -30,7 +30,7 @@ RUN apk add python3 ninja \
 # remove shared libraries that were built anyway
     && find /opt/llvm/lib \( -type f -or -type l \) \( -name '*.so' -or -name '*.so.*' \) -delete \
 # remove build dependencies
-    && apk del python3 ninja
+    && apk del -r python3 ninja
 
 # update PATH
 ENV PATH="/opt/llvm/bin:${PATH}"

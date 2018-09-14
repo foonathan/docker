@@ -4,16 +4,16 @@ LABEL maintainer="Jonathan Müller <jonathanmueller.dev@gmail.com>"
 
 # setup APK
 RUN apk update && apk upgrade \
-    && apk add ca-certificates \
+    && apk add --no-cache ca-certificates \
     && rm -rf /var/cache/apk/* \
 # install core tools
-    && apk add libc-dev gcc make \
+    && apk add --no-cache libc-dev gcc make \
 # install bash for convenience
-   && apk add bash \
+   && apk add --no-cache bash \
 # install git to fetch submodules
-   && apk add git \
+   && apk add --no-cache git \
 # install buildsystem
-   && apk add cmake
+   && apk add --no-cache cmake
 
 # setup working directory
 WORKDIR /root
