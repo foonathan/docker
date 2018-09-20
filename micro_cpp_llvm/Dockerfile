@@ -12,6 +12,7 @@ RUN apk add --no-cache python3 ninja \
     && mkdir llvm-build && mkdir /opt/llvm \
     && cd llvm-build \
     && cmake -G"Ninja" -DCMAKE_INSTALL_PREFIX="/opt/llvm" -DCMAKE_BUILD_TYPE=Release \
+                       -DGCC_INSTALL_PREFIX="/usr" \
                        -DLIBCLANG_BUILD_STATIC=ON -DLLVM_BUILD_EXAMPLES=OFF -DLLVM_BUILD_TESTS=OFF \
                         ../llvm-src \
     && cmake --build . \
@@ -37,3 +38,4 @@ RUN apk add --no-cache python3 ninja \
 # update PATH
 ENV PATH="/opt/llvm/bin:${PATH}"
 
+/opt/llvm/bin/clang "-I/opt/llvm/lib/clang/6.0.1/include" "preprocessing_external_macro.cpp"  >/dev/null
