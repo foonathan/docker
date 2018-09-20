@@ -3,11 +3,11 @@ FROM foonathan/micro_cpp_gcc
 # install build dependencies
 RUN apk add --no-cache python3 ninja \
 # download source code
-    && wget -q http://releases.llvm.org/6.0.1/llvm-6.0.1.src.tar.xz -O llvm.tar.xz \
-    && wget -q http://releases.llvm.org/6.0.1/cfe-6.0.1.src.tar.xz  -O clang.tar.xz \
+    && wget -q http://releases.llvm.org/7.0.0/llvm-7.0.0.src.tar.xz -O llvm.tar.xz \
+    && wget -q http://releases.llvm.org/7.0.0/cfe-7.0.0.src.tar.xz  -O clang.tar.xz \
 # extract
     && tar -xf llvm.tar.xz && tar -xf clang.tar.xz \
-    && mv llvm-6.0.1.src llvm-src && mv cfe-6.0.1.src llvm-src/tools/clang \
+    && mv llvm-7.0.0.src llvm-src && mv cfe-7.0.0.src llvm-src/tools/clang \
 # build
     && mkdir llvm-build && mkdir /opt/llvm \
     && cd llvm-build \
@@ -37,5 +37,3 @@ RUN apk add --no-cache python3 ninja \
 
 # update PATH
 ENV PATH="/opt/llvm/bin:${PATH}"
-
-/opt/llvm/bin/clang "-I/opt/llvm/lib/clang/6.0.1/include" "preprocessing_external_macro.cpp"  >/dev/null
