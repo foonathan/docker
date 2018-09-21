@@ -1,13 +1,16 @@
 FROM foonathan/micro_cpp_gcc
 
+ARG LLVM_FULL_VERSION=7.0.0
+ARG CLANG_BINARY=clang-7
+
 # install build dependencies
 RUN apk add --no-cache python3 ninja \
 # download source code
-    && wget -q http://releases.llvm.org/7.0.0/llvm-7.0.0.src.tar.xz -O llvm.tar.xz \
-    && wget -q http://releases.llvm.org/7.0.0/cfe-7.0.0.src.tar.xz  -O clang.tar.xz \
+    && wget -q http://releases.llvm.org/$LLVM_FULL_VERSION/llvm-$LLVM_FULL_VERSION.src.tar.xz -O llvm.tar.xz \
+    && wget -q http://releases.llvm.org/$LLVM_FULL_VERSION/cfe-$LLVM_FULL_VERSION.src.tar.xz  -O clang.tar.xz \
 # extract
     && tar -xf llvm.tar.xz && tar -xf clang.tar.xz \
-    && mv llvm-7.0.0.src llvm-src && mv cfe-7.0.0.src llvm-src/tools/clang \
+    && mv llvm-$LLVM_FULL_VERSION.src llvm-src && mv cfe-$LLVM_FULL_VERSION.src llvm-src/tools/clang \
 # build
     && mkdir llvm-build && mkdir /opt/llvm \
     && cd llvm-build \
@@ -27,7 +30,7 @@ RUN apk add --no-cache python3 ninja \
     && rm -r /opt/llvm/share/* \
     && rm -r /opt/llvm/libexec/* \
 # remove unnecessary tools (i.e. not clang and not llvm-config)
-    && find /opt/llvm/bin -type f -not -name 'clang-6.0' -not -name 'llvm-config' -delete \
+    && find /opt/llvm/bin -type f -not -name $CLANG_BINARY -not -name 'llvm-config' -delete \
 # remove symlinks broken by the command above
     && find -L /opt/llvm/bin -maxdepth 1 -type l -delete \
 # remove shared libraries that were built anyway
