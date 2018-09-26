@@ -15,4 +15,6 @@ jobs:
     displayName: micro_cpp_clang
   - script: docker build -t foonathan/micro_cpp_llvm micro_cpp_llvm/ && docker push foonathan/micro_cpp_llvm
     displayName: micro_cpp_llvm
+  - script: docker build -t foonathan/standardese_dev standardese_dev/ && docker push foonathan/standardese_dev
+    displayName: standardese_dev
 
