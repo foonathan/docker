@@ -1,7 +1,7 @@
 FROM foonathan/micro_cpp_llvm
 
 # download boost sources
-RUN wget -q https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz -O boost.tar.gz \
+RUN wget --no-check-certificate -q https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz -O boost.tar.gz \
     && tar -xf boost.tar.gz && mv boost_1_67_0/ boost-source/ \
 # build b2
     && cd boost-source/tools/build \
