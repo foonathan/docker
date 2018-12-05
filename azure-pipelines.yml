@@ -1,20 +1,52 @@
+name: 'Docker build'
 jobs:
-- job: default
+- job: latest_versions
   timeoutInMinutes: 360
   pool:
      vmImage: 'Ubuntu 16.04'
-
+  strategy:
+    matrix:
+      micro_cpp_base:      
+        NAME: micro_cpp_base
+      micro_cpp_gcc:      
+        NAME: micro_cpp_gcc
+      micro_cpp_clang:
+        NAME: micro_cpp_clang
+      micro_cpp_llvm:
+        NAME: micro_cpp_llvm
+      standardese_dev:
+        NAME: standardese_dev
   steps:
-  - script: docker login -u foonathan -p $(docker_pwd)
-    displayName: docker login
-  - script: docker build -t foonathan/micro_cpp_base micro_cpp_base/ && docker push foonathan/micro_cpp_base
-    displayName: micro_cpp_base
-  - script: docker build -t foonathan/micro_cpp_gcc micro_cpp_gcc/ && docker push foonathan/micro_cpp_gcc
-    displayName: micro_cpp_gcc
-  - script: docker build -t foonathan/micro_cpp_clang micro_cpp_clang/ && docker push foonathan/micro_cpp_clang
-    displayName: micro_cpp_clang
-  - script: docker build -t foonathan/micro_cpp_llvm micro_cpp_llvm/ && docker push foonathan/micro_cpp_llvm
-    displayName: micro_cpp_llvm
-  - script: docker build -t foonathan/standardese_dev standardese_dev/ && docker push foonathan/standardese_dev
-    displayName: standardese_dev
+    - script: docker login -u foonathan -p $(docker_pwd)
+      displayName: docker login
+    - script: docker build -t foonathan/$NAME $NAME/ && docker push foonathan/$NAME
+      displayName: $(NAME)
+
+- job: tagged_llvm
+  timeoutInMinutes: 360
+  pool:
+     vmImage: 'Ubuntu 16.04'
+  strategy:
+    matrix:
+      LLVM4:
+        LLVM_FULL_VERSION: 4.0.1
+        CLANG_BINARY: clang-4.0
+        TAG: llvm4
+      LLVM5:
+        LLVM_FULL_VERSION: 5.0.2
+        CLANG_BINARY: clang-5.0
+        TAG: llvm5
+      LLVM6:
+        LLVM_FULL_VERSION: 6.0.1
+        CLANG_BINARY: clang-6.0
+        TAG: llvm6
+      LLVM7:
+        LLVM_FULL_VERSION: 7.0.0
+        CLANG_BINARY: clang-7
+        TAG: llvm7
+  steps:
+    - script: docker login -u foonathan -p $(docker_pwd)
+      displayName: docker login
+    - script: docker build --build-arg LLVM_FULL_VERSION=$LLVM_FULL_VERSION --build-arg CLANG_BINARY=$CLANG_BINARY -t foonathan/micro_cpp_llvm:$TAG micro_cpp_llvm/ && docker push foonathan/micro_cpp_llvm:$TAG
+      displayName: micro_cpp_llvm $(TAG)
 
