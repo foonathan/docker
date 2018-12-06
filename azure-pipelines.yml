@@ -31,22 +31,26 @@ jobs:
       LLVM4:
         LLVM_FULL_VERSION: 4.0.1
         CLANG_BINARY: clang-4.0
+        PATCH: llvm-4.patch
         TAG: llvm4
       LLVM5:
         LLVM_FULL_VERSION: 5.0.2
         CLANG_BINARY: clang-5.0
+        PATCH: llvm-5.patch
         TAG: llvm5
       LLVM6:
         LLVM_FULL_VERSION: 6.0.1
         CLANG_BINARY: clang-6.0
+        PATCH: empty.patch
         TAG: llvm6
       LLVM7:
         LLVM_FULL_VERSION: 7.0.0
         CLANG_BINARY: clang-7
+        PATCH: empty.patch
         TAG: llvm7
   steps:
     - script: docker login -u foonathan -p $(docker_pwd)
       displayName: docker login
-    - script: docker build --build-arg LLVM_FULL_VERSION=$LLVM_FULL_VERSION --build-arg CLANG_BINARY=$CLANG_BINARY -t foonathan/micro_cpp_llvm:$TAG micro_cpp_llvm/ && docker push foonathan/micro_cpp_llvm:$TAG
+    - script: docker build --build-arg LLVM_FULL_VERSION=$LLVM_FULL_VERSION --build-arg CLANG_BINARY=$CLANG_BINARY --build-arg PATCH=$PATCH -t foonathan/micro_cpp_llvm:$TAG micro_cpp_llvm/ && docker push foonathan/micro_cpp_llvm:$TAG
       displayName: micro_cpp_llvm $(TAG)
 

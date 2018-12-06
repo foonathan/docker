@@ -2,6 +2,9 @@ FROM foonathan/micro_cpp_gcc
 
 ARG LLVM_FULL_VERSION=7.0.0
 ARG CLANG_BINARY=clang-7
+ARG PATCH=empty.patch
+
+COPY $PATCH /root/$PATCH
 
 # install build dependencies
 RUN apk add --no-cache python3 ninja \
@@ -11,6 +14,10 @@ RUN apk add --no-cache python3 ninja \
 # extract
     && tar -xf llvm.tar.xz && tar -xf clang.tar.xz \
     && mv llvm-$LLVM_FULL_VERSION.src llvm-src && mv cfe-$LLVM_FULL_VERSION.src llvm-src/tools/clang \
+# apply patches
+    && cd llvm-src/ \
+    && { git apply /root/$PATCH || true; } \
+    && cd ../ \
 # build
     && mkdir llvm-build && mkdir /opt/llvm \
     && cd llvm-build \
