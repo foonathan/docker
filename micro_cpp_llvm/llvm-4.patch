@@ -44,3 +44,154 @@ index ced21e46..0cf7e6f7 100644
  
  // On linux we have a weird situation. The stderr/out/in symbols are both
  // macros and global variables because of standards requirements. So, we
+diff --git a/tools/clang/include/clang/Driver/Distro.h b/tools/clang/include/clang/Driver/Distro.h
+index e2fb8b6..6082507 100644
+--- a/tools/clang/include/clang/Driver/Distro.h
++++ b/tools/clang/include/clang/Driver/Distro.h
+@@ -26,6 +26,7 @@ public:
+     // NB: Releases of a particular Linux distro should be kept together
+     // in this enum, because some tests are done by integer comparison against
+     // the first and last known member in the family, e.g. IsRedHat().
++    AlpineLinux,
+     ArchLinux,
+     DebianLenny,
+     DebianSqueeze,
+@@ -97,6 +98,10 @@ public:
+   /// @name Convenience Predicates
+   /// @{
+ 
++  bool IsAlpineLinux() const {
++    return DistroVal == AlpineLinux;
++  }
++
+   bool IsRedhat() const {
+     return DistroVal == Fedora || (DistroVal >= RHEL5 && DistroVal <= RHEL7);
+   }
+diff --git a/tools/clang/lib/Driver/Distro.cpp b/tools/clang/lib/Driver/Distro.cpp
+index d305b17..8eb0d8d 100644
+--- a/tools/clang/lib/Driver/Distro.cpp
++++ b/tools/clang/lib/Driver/Distro.cpp
+@@ -128,6 +128,9 @@ static Distro::DistroType DetectDistro(vfs::FileSystem &VFS) {
+   if (VFS.exists("/etc/arch-release"))
+     return Distro::ArchLinux;
+ 
++  if (VFS.exists("/etc/alpine-release"))
++    return Distro::AlpineLinux;
++
+   return Distro::UnknownDistro;
+ }
+ 
+diff --git a/tools/clang/lib/Driver/ToolChains.cpp b/tools/clang/lib/Driver/ToolChains.cpp
+index 9bc9ae4..e4fc082 100644
+--- a/tools/clang/lib/Driver/ToolChains.cpp
++++ b/tools/clang/lib/Driver/ToolChains.cpp
+@@ -1644,7 +1644,8 @@ bool Generic_GCC::GCCInstallationDetector::getBiarchSibling(Multilib &M) const {
+   case llvm::Triple::arm:
+   case llvm::Triple::thumb:
+     LibDirs.append(begin(ARMLibDirs), end(ARMLibDirs));
+-    if (TargetTriple.getEnvironment() == llvm::Triple::GNUEABIHF) {
++    if (TargetTriple.getEnvironment() == llvm::Triple::GNUEABIHF ||
++        TargetTriple.getEnvironment() == llvm::Triple::MuslEABIHF) {
+       TripleAliases.append(begin(ARMHFTriples), end(ARMHFTriples));
+     } else {
+       TripleAliases.append(begin(ARMTriples), end(ARMTriples));
+@@ -1653,7 +1654,8 @@ bool Generic_GCC::GCCInstallationDetector::getBiarchSibling(Multilib &M) const {
+   case llvm::Triple::armeb:
+   case llvm::Triple::thumbeb:
+     LibDirs.append(begin(ARMebLibDirs), end(ARMebLibDirs));
+-    if (TargetTriple.getEnvironment() == llvm::Triple::GNUEABIHF) {
++    if (TargetTriple.getEnvironment() == llvm::Triple::GNUEABIHF ||
++        TargetTriple.getEnvironment() == llvm::Triple::MuslEABIHF) {
+       TripleAliases.append(begin(ARMebHFTriples), end(ARMebHFTriples));
+     } else {
+       TripleAliases.append(begin(ARMebTriples), end(ARMebTriples));
+@@ -3956,7 +3958,8 @@ static std::string getMultiarchTriple(const Driver &D,
+   // regardless of what the actual target triple is.
+   case llvm::Triple::arm:
+   case llvm::Triple::thumb:
+-    if (TargetEnvironment == llvm::Triple::GNUEABIHF) {
++    if (TargetEnvironment == llvm::Triple::GNUEABIHF ||
++        TargetEnvironment == llvm::Triple::MuslEABIHF) {
+       if (D.getVFS().exists(SysRoot + "/lib/arm-linux-gnueabihf"))
+         return "arm-linux-gnueabihf";
+     } else {
+@@ -3966,7 +3969,8 @@ static std::string getMultiarchTriple(const Driver &D,
+     break;
+   case llvm::Triple::armeb:
+   case llvm::Triple::thumbeb:
+-    if (TargetEnvironment == llvm::Triple::GNUEABIHF) {
++    if (TargetEnvironment == llvm::Triple::GNUEABIHF ||
++        TargetEnvironment == llvm::Triple::MuslEABIHF) {
+       if (D.getVFS().exists(SysRoot + "/lib/armeb-linux-gnueabihf"))
+         return "armeb-linux-gnueabihf";
+     } else {
+@@ -4334,6 +4338,12 @@ std::string Linux::getDynamicLinker(const ArgList &Args) const {
+       ArchName = "armeb";
+       IsArm = true;
+       break;
++    case llvm::Triple::ppc:
++      ArchName = "powerpc";
++      break;
++    case llvm::Triple::x86:
++      ArchName = "i386";
++      break;
+     default:
+       ArchName = Triple.getArchName().str();
+     }
+@@ -4544,7 +4554,8 @@ void Linux::AddClangSystemIncludeArgs(const ArgList &DriverArgs,
+     break;
+   case llvm::Triple::arm:
+   case llvm::Triple::thumb:
+-    if (getTriple().getEnvironment() == llvm::Triple::GNUEABIHF)
++    if (getTriple().getEnvironment() == llvm::Triple::GNUEABIHF ||
++        getTriple().getEnvironment() == llvm::Triple::MuslEABIHF)
+       MultiarchIncludeDirs = ARMHFMultiarchIncludeDirs;
+     else
+       MultiarchIncludeDirs = ARMMultiarchIncludeDirs;
+diff --git a/tools/clang/lib/Driver/Tools.cpp b/tools/clang/lib/Driver/Tools.cpp
+index 4d4a8c2..fc8ff00 100644
+--- a/tools/clang/lib/Driver/Tools.cpp
++++ b/tools/clang/lib/Driver/Tools.cpp
+@@ -953,6 +953,7 @@ arm::FloatABI arm::getARMFloatABI(const ToolChain &TC, const ArgList &Args) {
+     case llvm::Triple::FreeBSD:
+       switch (Triple.getEnvironment()) {
+       case llvm::Triple::GNUEABIHF:
++      case llvm::Triple::MuslEABIHF:
+         ABI = FloatABI::Hard;
+         break;
+       default:
+@@ -9206,6 +9207,8 @@ void freebsd::Assembler::ConstructJob(Compilation &C, const JobAction &JA,
+     switch (getToolChain().getTriple().getEnvironment()) {
+     case llvm::Triple::GNUEABIHF:
+     case llvm::Triple::GNUEABI:
++    case llvm::Triple::MuslEABIHF:
++    case llvm::Triple::MuslEABI:
+     case llvm::Triple::EABI:
+       CmdArgs.push_back("-meabi=5");
+       break;
+@@ -9549,10 +9552,12 @@ void netbsd::Linker::ConstructJob(Compilation &C, const JobAction &JA,
+     switch (getToolChain().getTriple().getEnvironment()) {
+     case llvm::Triple::EABI:
+     case llvm::Triple::GNUEABI:
++    case llvm::Triple::MuslEABI:
+       CmdArgs.push_back("armelf_nbsd_eabi");
+       break;
+     case llvm::Triple::EABIHF:
+     case llvm::Triple::GNUEABIHF:
++    case llvm::Triple::MuslEABIHF:
+       CmdArgs.push_back("armelf_nbsd_eabihf");
+       break;
+     default:
+@@ -9567,10 +9572,12 @@ void netbsd::Linker::ConstructJob(Compilation &C, const JobAction &JA,
+     switch (getToolChain().getTriple().getEnvironment()) {
+     case llvm::Triple::EABI:
+     case llvm::Triple::GNUEABI:
++    case llvm::Triple::MuslEABI:
+       CmdArgs.push_back("armelfb_nbsd_eabi");
+       break;
+     case llvm::Triple::EABIHF:
+     case llvm::Triple::GNUEABIHF:
++    case llvm::Triple::MuslEABIHF:
+       CmdArgs.push_back("armelfb_nbsd_eabihf");
+       break;
+     default:
