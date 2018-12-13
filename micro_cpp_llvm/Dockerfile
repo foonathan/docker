@@ -43,7 +43,9 @@ RUN apk add --no-cache python3 ninja \
 # remove shared libraries that were built anyway
     && find /opt/llvm/lib \( -type f -or -type l \) \( -name '*.so' -or -name '*.so.*' \) -delete \
 # remove build dependencies
-    && apk del -r python3 ninja
+    && apk del -r python3 ninja \
+# remove patch file
+    && rm /root/$PATCH
 
 # update PATH
 ENV PATH="/opt/llvm/bin:${PATH}"
