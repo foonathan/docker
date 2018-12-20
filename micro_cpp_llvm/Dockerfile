@@ -7,7 +7,7 @@ ARG PATCH=empty.patch
 COPY $PATCH /root/$PATCH
 
 # install build dependencies
-RUN apk add --no-cache python3 ninja \
+RUN apk update && apk add --no-cache python3 ninja \
 # download source code
     && wget -q http://releases.llvm.org/$LLVM_FULL_VERSION/llvm-$LLVM_FULL_VERSION.src.tar.xz -O llvm.tar.xz \
     && wget -q http://releases.llvm.org/$LLVM_FULL_VERSION/cfe-$LLVM_FULL_VERSION.src.tar.xz  -O clang.tar.xz \
