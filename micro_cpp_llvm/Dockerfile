@@ -1,7 +1,7 @@
 FROM foonathan/micro_cpp_gcc
 
-ARG LLVM_FULL_VERSION=7.0.0
-ARG CLANG_BINARY=clang-7
+ARG LLVM_FULL_VERSION=8.0.0
+ARG CLANG_BINARY=clang-8
 ARG PATCH=empty.patch
 
 COPY $PATCH /root/$PATCH

@@ -44,10 +44,15 @@ jobs:
         PATCH: empty.patch
         TAG: llvm6
       LLVM7:
-        LLVM_FULL_VERSION: 7.0.0
+        LLVM_FULL_VERSION: 7.0.1
         CLANG_BINARY: clang-7
         PATCH: empty.patch
         TAG: llvm7
+      LLVM8:
+        LLVM_FULL_VERSION: 8.0.0
+        CLANG_BINARY: clang-8
+        PATCH: empty.patch
+        TAG: llvm8
   steps:
     - script: docker login -u foonathan -p $(docker_pwd)
       displayName: docker login
