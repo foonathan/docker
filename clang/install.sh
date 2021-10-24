@@ -4,11 +4,11 @@ set -eou pipefail
 
 LLVM_VERSION=$1
 case "${LLVM_VERSION}" in
-6*)
+6*|7*)
   MIRROR="llvm"
   PLATFORM="linux-gnu-ubuntu-16.04"
   ;;
-7*|8*|9*)
+8*|9*)
   MIRROR="llvm"
   PLATFORM="linux-gnu-ubuntu-18.04"
   ;;
