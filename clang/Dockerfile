@@ -3,7 +3,7 @@ FROM bitnami/minideb:${DEBIAN_VERSION}
 LABEL maintainer="Jonathan Müller <jonathanmueller.dev@gmail.com>"
 
 WORKDIR /root
-COPY install-llvm.sh install-cmake.sh ./
+COPY clang/install-llvm.sh common/install-cmake.sh ./
 
 ARG LLVM_VERSION
 RUN apt-get update -qq && \
