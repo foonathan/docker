@@ -11,10 +11,14 @@ case "${LLVM_VERSION}" in
 8*|9*)
   MIRROR="llvm"
   PLATFORM="linux-gnu-ubuntu-18.04"
+
+  apt-get install -y --no-install-recommends libtinfo5
   ;;
 10*)
   MIRROR="github"
   PLATFORM="linux-gnu-ubuntu-18.04"
+
+  apt-get install -y --no-install-recommends libtinfo5
   ;;
 11*|12*|13*)
   MIRROR="github"
