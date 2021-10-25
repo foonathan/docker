@@ -43,7 +43,14 @@ wget -nv -O "${DOWNLOAD_FILE}" "${MIRROR_URL}/${DOWNLOAD}"
 # Install
 echo "Installing ${TARGET}"
 tar xf "${DOWNLOAD_FILE}"
-cp -a "${TARGET}/"* "/usr/local/"
+# Delete all binaries that are not clang-Major
+find ${TARGET}/bin -type f -not -regex '.*/clang-[0-9].*' -delete
+# Delete all now broken symlinks.
+find -L ${TARGET}/bin -maxdepth 1 -type l -delete
+# Copy the remaining binaries over.
+cp -a ${TARGET}/bin/* /usr/local/bin/
+# And the necessary libs.
+cp -a ${TARGET}/lib/clang/ /usr/local/lib/
 
 # Cleanup
 rm -rf "${DOWNLOAD_FILE}" "${TARGET:?}/"
