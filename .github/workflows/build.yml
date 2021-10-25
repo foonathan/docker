@@ -21,7 +21,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      IMAGE: ghcr.io/foonathan/clang
+      IMAGE: ghcr.io/foonathan/clang:${{ matrix.version }}
     steps:
       - name: Log-in
         uses: docker/login-action@v1
@@ -35,9 +35,15 @@ jobs:
       - name: Build image
         run: |
           docker build --build-arg DEBIAN_VERSION=${{ matrix.version.debian }} --build-arg LLVM_VERSION=${{ matrix.version.llvm }} \
-             --tag $IMAGE:${{ matrix.version.tag }} -f $GITHUB_WORKSPACE/clang/Dockerfile .
+             --tag $IMAGE -f $GITHUB_WORKSPACE/clang/Dockerfile .
+
+      - name: Test image
+        run: |
+          cat $GITHUB_WORKSPACE/test/build.sh | \
+          docker run -v "$GITHUB_WORKSPACE/test:/src" -i $IMAGE /bin/bash
+
       - name: Publish image
-        run: docker push $IMAGE:${{ matrix.version.tag }}
+        run: docker push $IMAGE
 
   gcc:
     strategy:
@@ -47,7 +53,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      IMAGE: ghcr.io/foonathan/gcc
+      IMAGE: ghcr.io/foonathan/gcc:${{ matrix.version }}
     steps:
       - name: Log-in
         uses: docker/login-action@v1
@@ -61,7 +67,13 @@ jobs:
       - name: Build image
         run: |
           docker build --build-arg GCC_VERSION=${{ matrix.version }} \
-             --tag $IMAGE:${{ matrix.version }} -f $GITHUB_WORKSPACE/gcc/Dockerfile .
+             --tag $IMAGE -f $GITHUB_WORKSPACE/gcc/Dockerfile .
+
+      - name: Test image
+        run: |
+          cat $GITHUB_WORKSPACE/test/build.sh | \
+          docker run -v "$GITHUB_WORKSPACE/test:/src" -i $IMAGE /bin/bash
+
       - name: Publish image
-        run: docker push $IMAGE:${{ matrix.version }}
+        run: docker push $IMAGE
 
