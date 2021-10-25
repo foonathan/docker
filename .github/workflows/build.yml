@@ -9,7 +9,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [6, 7, 8, 9, 10, 11, 12]
+        version:
+          - {tag: 6, debian: buster, llvm: "6.0.0"}
+          - {tag: 7, debian: buster, llvm: "7.0.0"}
+          - {tag: 8, debian: buster, llvm: "8.0.0"}
+          - {tag: 9, debian: buster, llvm: "9.0.0"}
+          - {tag: 10, debian: buster, llvm: "10.0.0"}
+          - {tag: 11, debian: bullseye, llvm: "11.0.0"}
+          - {tag: 12, debian: bullseye, llvm: "12.0.0"}
+          - {tag: 13, debian: bullseye, llvm: "13.0.0"}
 
     runs-on: ubuntu-latest
     env:
@@ -25,7 +33,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build --build-arg LLVM_VERSION=${{ matrix.version }}.0.0 --tag $IMAGE:${{ matrix.version }} $GITHUB_WORKSPACE/clang/
+        run: |
+          docker build --build-arg DEBIAN_VERSION=${{ matrix.version.debian }} --build-arg LLVM_VERSION=${{ matrix.version.llvm }} \
+             --tag $IMAGE:${{ matrix.version.tag }} $GITHUB_WORKSPACE/clang/
       - name: Publish image
-        run: docker push $IMAGE:${{ matrix.version }}
+        run: docker push $IMAGE:${{ matrix.version.tag }}
 
