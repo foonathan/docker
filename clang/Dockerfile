@@ -12,6 +12,7 @@ RUN apt-get update -qq && \
     ./install-cmake.sh && \
     rm install-clang.sh install-cmake.sh
 
-ENV CC  clang
-ENV CXX clang++
+ENV CC              clang
+ENV CXX             clang++
+ENV CMAKE_GENERATOR Ninja
 

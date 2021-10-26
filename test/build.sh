@@ -1,6 +1,6 @@
 set -eou pipefail
 
-cmake -GNinja /src
+cmake /src
 cmake --build .
 ctest
 

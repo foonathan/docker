@@ -10,3 +10,5 @@ RUN apt-get update -qq && \
     ./install-cmake.sh && \
     rm install-cmake.sh
 
+ENV CMAKE_GENERATOR Ninja
+

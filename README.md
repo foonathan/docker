@@ -12,12 +12,12 @@ not to actually build a released executable or anything like that.
 It is designed for a basic CMake workflow:
 
 ```sh
-cmake -GNinja /path/to/src
+cmake /path/to/src
 cmake --build .
 ctest
 ```
 
-This will automatically select the specific compiler.
+This will automatically select the specific compiler and Ninja as generator.
 
 ## Image ghcr.io/foonathan/clang:<version>
 
