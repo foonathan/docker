@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 set -eou pipefail
 
-MIRROR_URL="https://github.com/Kitware/CMake/releases/download/v3.21.3/"
-DOWNLOAD="cmake-3.21.3-linux-x86_64.sh"
+MIRROR_URL="https://github.com/Kitware/CMake/releases/download/v3.23.2/"
+DOWNLOAD_X86="cmake-3.23.2-linux-x86_64.sh"
+DOWNLOAD_ARM="cmake-3.23.2-linux-aarch64.sh"
 DOWNLOAD_FILE="cmake.sh"
+
+if [ $(uname -m) = "x86_64" ]; then
+    DOWNLOAD=$DOWNLOAD_X86
+elif [ $(uname -m) = "aarch64" ]; then
+    DOWNLOAD=$DOWNLOAD_ARM
+else
+    echo "unknown architecture" >/dev/stderr
+    exit 1
+fi
 
 # Download
 echo "Downloading ${DOWNLOAD}"
