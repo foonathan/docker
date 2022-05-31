@@ -18,7 +18,6 @@ jobs:
           - {tag: 11, debian: bullseye, llvm: "11.0.0"}
           - {tag: 12, debian: bullseye, llvm: "12.0.0"}
           - {tag: 13, debian: bullseye, llvm: "13.0.0"}
-        platform: ["linux/amd64", "linux/arm64/v8"]
 
     runs-on: ubuntu-latest
     env:
@@ -40,24 +39,20 @@ jobs:
 
       - name: Build image
         run: |
-          docker buildx build \
+          docker buildx build --push \
              --build-arg DEBIAN_VERSION=${{ matrix.version.debian }} --build-arg LLVM_VERSION=${{ matrix.version.llvm }} \
-             --platform ${{ matrix.platform }} --tag $IMAGE -f $GITHUB_WORKSPACE/clang/Dockerfile .
+             --platform linux/amd64,linux/arm64/v8 --tag $IMAGE -f $GITHUB_WORKSPACE/clang/Dockerfile .
 
       - name: Test image
         run: |
           cat $GITHUB_WORKSPACE/test/build.sh | \
           docker run -v "$GITHUB_WORKSPACE/test:/src" -i $IMAGE /bin/bash
 
-      - name: Publish image
-        run: docker push $IMAGE
-
   gcc:
     strategy:
       fail-fast: false
       matrix:
         version: [7, 8, 9, 10, 11, 12]
-        platform: ["linux/amd64", "linux/arm64/v8"]
 
     runs-on: ubuntu-latest
     env:
@@ -79,15 +74,12 @@ jobs:
 
       - name: Build image
         run: |
-          docker buildx build \
+          docker buildx build --push \
              --build-arg GCC_VERSION=${{ matrix.version }} \
-             --platform ${{ matrix.platform }} --tag $IMAGE -f $GITHUB_WORKSPACE/gcc/Dockerfile .
+             --platform linux/amd64,linux/arm64/v8 --tag $IMAGE -f $GITHUB_WORKSPACE/gcc/Dockerfile .
 
       - name: Test image
         run: |
           cat $GITHUB_WORKSPACE/test/build.sh | \
           docker run -v "$GITHUB_WORKSPACE/test:/src" -i $IMAGE /bin/bash
-
-      - name: Publish image
-        run: docker push $IMAGE
 
