@@ -5,25 +5,55 @@ set -eou pipefail
 LLVM_VERSION=$1
 case "${LLVM_VERSION}" in
 6*|7*)
-  MIRROR="llvm"
-  PLATFORM="linux-gnu-ubuntu-16.04"
-  ;;
+    MIRROR="llvm"
+    if [ $(uname -m) = "x86_64" ]; then
+        PLATFORM="x86_64-linux-gnu-ubuntu-16.04"
+    elif [ $(uname -m) = "aarch64" ]; then
+        PLATFORM="aarch64-linux-gnu"
+    else
+        echo "unknown architecture" >/dev/stderr
+        exit 1
+    fi
+    ;;
 8*|9*)
-  MIRROR="llvm"
-  PLATFORM="linux-gnu-ubuntu-18.04"
+    MIRROR="llvm"
+    if [ $(uname -m) = "x86_64" ]; then
+        PLATFORM="x86_64-linux-gnu-ubuntu-18.04"
+    elif [ $(uname -m) = "aarch64" ]; then
+        PLATFORM="aarch64-linux-gnu"
+    else
+        echo "unknown architecture" >/dev/stderr
+        exit 1
+    fi
 
-  apt-get install -y --no-install-recommends libtinfo5
-  ;;
+    apt-get install -y --no-install-recommends libtinfo5
+    ;;
 10*)
-  MIRROR="github"
-  PLATFORM="linux-gnu-ubuntu-18.04"
+    MIRROR="github"
+    if [ $(uname -m) = "x86_64" ]; then
+        PLATFORM="x86_64-linux-gnu-ubuntu-18.04"
+    elif [ $(uname -m) = "aarch64" ]; then
+        PLATFORM="aarch64-linux-gnu"
+    else
+        echo "unknown architecture" >/dev/stderr
+        exit 1
+    fi
 
-  apt-get install -y --no-install-recommends libtinfo5
-  ;;
+    apt-get install -y --no-install-recommends libtinfo5
+    ;;
 11*|12*|13*)
-  MIRROR="github"
-  PLATFORM="linux-gnu-ubuntu-20.04"
-  ;;
+    MIRROR="github"
+    if [ $(uname -m) = "x86_64" ]; then
+        PLATFORM="x86_64-linux-gnu-ubuntu-20.04"
+    elif [ $(uname -m) = "aarch64" ]; then
+        PLATFORM="aarch64-linux-gnu"
+    else
+        echo "unknown architecture" >/dev/stderr
+        exit 1
+    fi
+
+    apt-get install -y --no-install-recommends libtinfo5
+    ;;
 esac
 
 case "${MIRROR}" in
@@ -36,8 +66,8 @@ case "${MIRROR}" in
 esac
 
 # Set install target and download file
-TARGET="clang+llvm-${LLVM_VERSION}-x86_64-${PLATFORM}"
-DOWNLOAD="clang+llvm-${LLVM_VERSION}-x86_64-${PLATFORM}.tar.xz"
+TARGET="clang+llvm-${LLVM_VERSION}-${PLATFORM}"
+DOWNLOAD="clang+llvm-${LLVM_VERSION}-${PLATFORM}.tar.xz"
 DOWNLOAD_FILE="llvm.tar.xz"
 
 # Download
