@@ -25,8 +25,6 @@ case "${LLVM_VERSION}" in
         echo "unknown architecture" >/dev/stderr
         exit 1
     fi
-
-    apt-get install -y --no-install-recommends libtinfo5
     ;;
 10*)
     MIRROR="github"
@@ -38,8 +36,6 @@ case "${LLVM_VERSION}" in
         echo "unknown architecture" >/dev/stderr
         exit 1
     fi
-
-    apt-get install -y --no-install-recommends libtinfo5
     ;;
 11*|12*|13*)
     MIRROR="github"
@@ -51,8 +47,6 @@ case "${LLVM_VERSION}" in
         echo "unknown architecture" >/dev/stderr
         exit 1
     fi
-
-    apt-get install -y --no-install-recommends libtinfo5
     ;;
 esac
 
@@ -64,6 +58,9 @@ case "${MIRROR}" in
     MIRROR_URL="http://releases.llvm.org/${LLVM_VERSION}"
     ;;
 esac
+
+# Install dependency.
+apt-get install -y --no-install-recommends libtinfo5
 
 # Set install target and download file
 TARGET="clang+llvm-${LLVM_VERSION}-${PLATFORM}"
