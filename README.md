@@ -22,7 +22,7 @@ This will automatically select the specific compiler and Ninja as generator.
 ## Image ghcr.io/foonathan/clang:<version>
 
 * clang 6-10 on Debian buster
-* clang 11-13 on Debian bullseye
+* clang 11-15 on Debian bullseye
 
 ## Image ghcr.io/foonathan/gcc:<version>
 
