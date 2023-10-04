@@ -20,7 +20,7 @@ jobs:
           - {tag: 13, debian: bullseye, llvm: "13.0.0"}
           - {tag: 14, debian: bullseye, llvm: "14.0.0"}
           - {tag: 15, debian: bullseye, llvm: "15.0.6"}
-          - {tag: 16, debian: bullseye, llvm: "16.0.4"}
+          - {tag: 16, debian: bookworm, llvm: "16.0.4"}
 
     runs-on: ubuntu-latest
     env:
