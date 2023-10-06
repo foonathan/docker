@@ -91,7 +91,7 @@ DOWNLOAD_FILE="llvm.tar.xz"
 
 # Download
 echo "Downloading ${DOWNLOAD}"
-wget -nv -O "${DOWNLOAD_FILE}" "${MIRROR_URL}/${DOWNLOAD}"
+curl -L "${MIRROR_URL}/${DOWNLOAD}" --output "${DOWNLOAD_FILE}"
 
 # Install
 echo "Installing ${TARGET}"
