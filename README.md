@@ -6,8 +6,10 @@ not to actually build a released executable or anything like that.
 
 ## Common Software
 
+* curl
 * git
-* CMake 3.21
+* CMake 3.27.6
+* ninja
 
 It is designed for a basic CMake workflow:
 

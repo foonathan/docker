@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -eou pipefail
 
-MIRROR_URL="https://github.com/Kitware/CMake/releases/download/v3.23.2/"
-DOWNLOAD_X86="cmake-3.23.2-linux-x86_64.sh"
-DOWNLOAD_ARM="cmake-3.23.2-linux-aarch64.sh"
+VERSION="3.27.6"
+MIRROR_URL="https://github.com/Kitware/CMake/releases/download/v$VERSION/"
+DOWNLOAD_X86="cmake-$VERSION-linux-x86_64.sh"
+DOWNLOAD_ARM="cmake-$VERSION-linux-aarch64.sh"
 DOWNLOAD_FILE="cmake.sh"
 
 if [ $(uname -m) = "x86_64" ]; then
