@@ -7,7 +7,7 @@ COPY clang/install-clang.sh common/install-cmake.sh ./
 
 ARG LLVM_VERSION
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends ca-certificates ninja-build git g++ curl xz-utils && \
+    apt-get install -y --no-install-recommends ca-certificates ninja-build git g++ curl xz-utils unzip && \
     ./install-clang.sh $LLVM_VERSION && \
     ./install-cmake.sh && \
     rm install-clang.sh install-cmake.sh
