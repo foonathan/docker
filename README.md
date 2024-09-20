@@ -25,9 +25,9 @@ This will automatically select the specific compiler and Ninja as generator.
 
 * clang 6-10 on Debian buster
 * clang 11-15 on Debian bullseye
-* clang 16 on Debian bookworm
+* clang 16-18 on Debian bookworm
 
 ## Image ghcr.io/foonathan/gcc:<version>
 
-* GCC 7-13
+* GCC 7-14
 

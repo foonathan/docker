@@ -21,6 +21,8 @@ jobs:
           - {tag: 14, debian: bullseye, llvm: "14.0.0"}
           - {tag: 15, debian: bullseye, llvm: "15.0.6"}
           - {tag: 16, debian: bookworm, llvm: "16.0.4"}
+          - {tag: 17, debian: bookworm, llvm: "17.0.6"}
+          - {tag: 18, debian: bookworm, llvm: "18.1.8"}
 
     runs-on: ubuntu-latest
     env:
@@ -55,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [7, 8, 9, 10, 11, 12, 13]
+        version: [7, 8, 9, 10, 11, 12, 13, 14]
 
     runs-on: ubuntu-latest
     env:

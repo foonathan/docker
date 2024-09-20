@@ -70,6 +70,28 @@ case "${LLVM_VERSION}" in
         exit 1
     fi
     ;;
+17*)
+    MIRROR="github"
+    if [ $(uname -m) = "x86_64" ]; then
+        PLATFORM="x86_64-linux-gnu-ubuntu-22.04"
+    elif [ $(uname -m) = "aarch64" ]; then
+        PLATFORM="aarch64-linux-gnu"
+    else
+        echo "unknown architecture" >/dev/stderr
+        exit 1
+    fi
+    ;;
+18*)
+    MIRROR="github"
+    if [ $(uname -m) = "x86_64" ]; then
+        PLATFORM="x86_64-linux-gnu-ubuntu-18.04"
+    elif [ $(uname -m) = "aarch64" ]; then
+        PLATFORM="aarch64-linux-gnu"
+    else
+        echo "unknown architecture" >/dev/stderr
+        exit 1
+    fi
+    ;;
 esac
 
 case "${MIRROR}" in
