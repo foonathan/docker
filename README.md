@@ -8,7 +8,7 @@ not to actually build a released executable or anything like that.
 
 * curl
 * git
-* CMake 3.27.6
+* CMake 3.30.3
 * ninja
 
 It is designed for a basic CMake workflow:
